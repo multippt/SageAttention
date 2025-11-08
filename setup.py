@@ -29,6 +29,7 @@ HAS_SM86 = False
 HAS_SM89 = False
 HAS_SM90 = False
 HAS_SM120 = False
+HAS_SM121 = False
 
 # Supported NVIDIA GPU architectures.
 SUPPORTED_ARCHS = {"8.0", "8.6", "8.9", "9.0", "12.0"}
@@ -113,15 +114,15 @@ for capability in compute_capabilities:
         HAS_SM120 = True
         num = "120" # need to use sm120a to use mxfp8/mxfp4/nvfp4 instructions.
     elif capability.startswith("12.1"):
-        HAS_SM120 = True
-        num = "121" # need to use sm121 to use mxfp8/mxfp4/nvfp4 instructions.
+        HAS_SM121 = True
+        num = "121" # need to use sm121a to use mxfp8/mxfp4/nvfp4 instructions.
     NVCC_FLAGS += ["-gencode", f"arch=compute_{num},code=sm_{num}"]
     if capability.endswith("+PTX"):
         NVCC_FLAGS += ["-gencode", f"arch=compute_{num},code=compute_{num}"]
 
 ext_modules = []
 
-if HAS_SM80 or HAS_SM86 or HAS_SM89 or HAS_SM90 or HAS_SM120:
+if HAS_SM80 or HAS_SM86 or HAS_SM89 or HAS_SM90 or HAS_SM120 or HAS_SM121:
     qattn_extension = CUDAExtension(
         name="sageattention._qattn_sm80",
         sources=[
@@ -135,7 +136,7 @@ if HAS_SM80 or HAS_SM86 or HAS_SM89 or HAS_SM90 or HAS_SM120:
     )
     ext_modules.append(qattn_extension)
 
-if HAS_SM89 or HAS_SM90 or HAS_SM120:
+if HAS_SM89 or HAS_SM90 or HAS_SM120 or HAS_SM121:
     qattn_extension = CUDAExtension(
         name="sageattention._qattn_sm89",
         sources=[
